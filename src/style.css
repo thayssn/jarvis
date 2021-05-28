@@ -8,6 +8,7 @@ html{
     padding: 0;
     margin: 0;
     box-sizing: border-box;
+    outline: none;
 }
 
 body{
@@ -19,13 +20,14 @@ body{
     background-repeat: no-repeat;
     width: 100%;
     height: 100%;
+    padding-top: 30px;
 }
 
 h1{
     font-weight: bold;
     color: white;
     text-transform: uppercase;
-    margin: 20px;
+    margin: 10px 0 0 15px;
 }
 
 .block__wrapper{
@@ -37,11 +39,13 @@ h1{
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    align-items: start;
     padding: 30px 45px;
 }
 
 .block{
     width: 50%;
+    height: auto;
     position: relative;
     padding: 15px;
     align-self: start;
@@ -51,14 +55,39 @@ h1{
     font-size: 16px;
     font-weight: bold;
     margin-bottom: 15px;
+    padding: 2px 17px 0 0;
+    display: inline-block;
+    position: relative;
+    color: white;
 }
 
 .cpu .block_title{
-    color: #fc034e;
+    color: #44ffb1;
 }
 
 .memory .block_title{
-    color: #03dbfc;
+    color: #e3ff44;
+}
+
+.netstats{
+    width: 100%;
+    color: white;
+}
+
+.netstats .block_title{
+    background-color: #00aeff;
+}
+
+.netstats span:nth-of-type(2n){
+    color: #afd8ff;
+}
+
+.netstats span:after{
+    content: ' / ';
+}
+
+.netstats span:last-child:after{
+    content: '';
 }
 
 .drive{
@@ -66,24 +95,7 @@ h1{
 }
 
 .drive .block_title{
-    width: calc(100% - 20px);
-    position: relative;
     background-color: #fc034e;
-}
-
-.drive .block_title:before,
-.drive .block_title:after{
-    content: "";
-    width: 4px;
-    height: 100%;
-    background-color: #fc034e;
-    position: absolute;
-    right: -8px;
-}
-
-.drive .block_title:after{
-    width: 8px;
-    right: -20px;
 }
 
 .drive .bar{
@@ -133,37 +145,105 @@ h1{
 
 .block_value{
     color: #fff;
-    font-size:  30px;
+    font-size:  24px;
     font-weight: bold;
-}
-
-.block_value:before{
-    content: "";
-    position: absolute;
-    width: 12vw;
-    bottom: 0;
-    border-bottom: 1px solid #fff;
-    left: 0;
-    right: 0;
+    margin-bottom: 5px;
 }
 
 .block_value:after{
     content: "%";
+    font-size: 0.85em;
+}
+
+.block_subtitle{
+    font-size: 8px;
+    color: white;
+    bottom: 0;
 }
 
 footer{
     font-size: 8px;
     position: absolute;
-    bottom: 0;
     background-color: rgba(0,0,0,.8);
     padding: 10px;
     color: white;
 }
+
+header{
+    width: 100%;
+    position: absolute;
+    top: 0;
+    user-select: none;
+}
+
+header .title-bar{
+    -webkit-app-region: drag;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 26px;
+    color: white;
+    background-color: rgba(0,0,0,.8);
+}
+
+header .title-bar-btns{
+    padding-right: 5px;
+    position: absolute;
+    height: 100%;
+    right: 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    -webkit-app-region: no-drag;
+}
+
+header .btn{
+    display: inline-flex;
+    width: 16px;
+    height: 16px;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    color: white;
+    border-left: 1px solid #fc034e;
+    border-bottom: 1px solid #fc034e;
+    border-top: 1px solid #FFF;
+    border-right: 1px solid #FFF;
+}
+
+header .btn:hover{
+    background-color: #fc034e;
+    cursor: pointer;
+}
+
+header .btn:active, header .btn:focus{
+    background-color: #FFF;
+    color: #000;
+}
+
+footer{
+    bottom: 0;
+}
+
 
 footer a{
     color: white;
 }
 
 footer a:hover{
-    color: rgb(0, 255, 242);
+    color: #b370ff;
+}
+
+#os{
+    max-width: 255px;
+    color: white;
+    word-wrap: break-word;
+    white-space:break;
+    word-break: break-all;
+}
+
+#os span{
+    font-weight: bold;
+    color: #FFD;
 }

@@ -1,23 +1,28 @@
+ipcRenderer.on('system_info', (event, {cpu, memory, netstats}) => {
+    document.querySelector('#memory').textContent = memory.usage;
+    document.querySelector('#memory_total').textContent = `${memory.used}MB of ${memory.total/1000}MB `;
+    document.querySelector('#cpu').textContent = cpu.usage;
+    document.querySelector('#cpu_model').textContent = cpu.model;
+    document.querySelector('#netstats').innerHTML = `
+        ${netstats.map(net => `<span>${net.interface} : ${net.inputBytes} ${net.outputBytes}</span>`).join(' ')}
+    `
 
-const { ipcRenderer } = require('electron');
-
-ipcRenderer.on('system_info', (event, {cpu, memory, user}) => {
-    document.querySelector('#memory').textContent = cpu;
-    document.querySelector('#cpu').textContent = memory;
 })
 
-ipcRenderer.on('user_info', (event, {user, drive}) => {
+ipcRenderer.on('user_info', (event, {user, drive, os}) => {
     const nameSpan = document.querySelector('#user .name');
     animateName(nameSpan, user);
 
     const driveBar = document.querySelector('.drive .bar');
-    console.log(drive)
     driveBar.querySelector('.used').style.width = `${drive.usedPercentage}%`;
     driveBar.querySelector('.used .value').textContent = `${drive.usedPercentage}%`;
-    driveBar.querySelector('.used .tooltip').textContent = `${drive.usedGb}GB / ${drive.totalGb}GB`;
+    driveBar.querySelector('.used .tooltip').textContent = `${drive.usedGb}GB of ${drive.totalGb}GB`;
     driveBar.querySelector('.free').style.width = `${drive.freePercentage}%`;
     driveBar.querySelector('.free .value').textContent = `${drive.freePercentage}%`;
-    driveBar.querySelector('.free .tooltip').textContent = `${drive.freeGb}GB / ${drive.totalGb}GB`;
+    driveBar.querySelector('.free .tooltip').textContent = `${drive.freeGb}GB of ${drive.totalGb}GB`;
+
+    document.querySelector('#os').innerHTML = `${Object.keys(os).map(value => `<span>${value}</span> ${os[value]} `).join(' ')}`
+
 })
 
 function animateName(element, name){

@@ -1,19 +1,25 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 
-const {cpu, mem, osCmd, drive} = require('node-os-utils');
+const {cpu, mem, osCmd, drive, netstat, os} = require('node-os-utils');
+
+
 const toMB = (value) => value / 1024 / 1000;
 const toGB = (value) => value / 1024 / 1000 / 1000;
 
- function createWindow () {
+function createWindow () {
   let win = new BrowserWindow({
     width: 1024,
     height: 768,
+    transparent: true,
+    frame: false,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
       // devTools: false
     }
   })
+
+  win.show();
 
   win.loadFile('index.html');
 
@@ -22,28 +28,65 @@ const toGB = (value) => value / 1024 / 1000 / 1000;
   contents.on('did-finish-load', async () => {
     
     const user = await osCmd.whoami()
+    const driveInfo = await drive.info()
+    const osInfo = {
+      oos: await os.oos(),
+      platform: await os.platform(),
+      uptime: `${(await os.uptime() / 60).toFixed(2) } minutes`,
+      ip: await os.ip(),
+      hostname: await os.hostname()
+    }
 
     contents.send('user_info', {
       user,
-      drive: await drive.info()
+      drive: driveInfo,
+      os: osInfo
     })
     
     await getSystemInfos();
 
     async function getSystemInfos() {
-      const cpu_usage = await cpu.usage();
-      const {freeMemPercentage:  mem_free_percentage} = await mem.info();
-      const memory_usage = 100 - mem_free_percentage;
-
+      const { stats } = await netstat
+      const interfaces = await stats()
+      const cpu_usage = await cpu.usage()
+      const cpu_model = await cpu.model()
+      const {totalMemMb: mem_total ,usedMemMb: mem_total_used, freeMemPercentage:  mem_free_percentage} = await mem.info()
+      const memory_usage = 100 - mem_free_percentage
       contents.send('system_info', {
-        cpu: parseInt(cpu_usage),
-        memory: parseInt(memory_usage),
-      });
+        cpu: {
+          usage: parseInt(cpu_usage),
+          model: cpu_model
+        },
+        memory: {
+          usage: parseInt(memory_usage),
+          total: mem_total,
+          used: mem_total_used,
+        },
+        netstats: interfaces
+      })
     
-      setTimeout(() => getSystemInfos(), 5000)
+      setTimeout(async () => await getSystemInfos(), 5000)
     }
-  });
+  })
+
+  const takeActions = {
+    minimize(){
+      win.minimize()
+    },
+    close(){
+      if (process.platform !== 'darwin') {
+        app.quit()
+      }
+    }
+  }
+
+  ipcMain.on('title-bar', (event, { action }) => {
+    takeActions[action]()
+    event.returnValue = '';
+  })
+
 }
+
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
     // No macOS é comum para aplicativos e sua barra de menu 
@@ -61,7 +104,7 @@ app.on('activate', () => {
     }
 })
   
-app.whenReady().then(createWindow).then()
+app.whenReady().then(createWindow)
 
 
 // opening urls
