@@ -12,6 +12,7 @@ function createWindow () {
     height: 768,
     transparent: true,
     frame: false,
+    icon: __dirname + './icon.png',
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,

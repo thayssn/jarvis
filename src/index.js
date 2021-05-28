@@ -1,6 +1,6 @@
 ipcRenderer.on('system_info', (event, {cpu, memory, netstats}) => {
     document.querySelector('#memory').textContent = memory.usage;
-    document.querySelector('#memory_total').textContent = `${memory.used}MB of ${memory.total/1000}MB `;
+    document.querySelector('#memory_total').textContent = `${memory.used}MB of ${memory.total}MB `;
     document.querySelector('#cpu').textContent = cpu.usage;
     document.querySelector('#cpu_model').textContent = cpu.model;
     document.querySelector('#netstats').innerHTML = `
@@ -20,6 +20,8 @@ ipcRenderer.on('user_info', (event, {user, drive, os}) => {
     driveBar.querySelector('.free').style.width = `${drive.freePercentage}%`;
     driveBar.querySelector('.free .value').textContent = `${drive.freePercentage}%`;
     driveBar.querySelector('.free .tooltip').textContent = `${drive.freeGb}GB of ${drive.totalGb}GB`;
+
+    console.log(drive)
 
     document.querySelector('#os').innerHTML = `${Object.keys(os).map(value => `<span>${value}</span> ${os[value]} `).join(' ')}`
 
@@ -46,3 +48,14 @@ function randomString(string) {
     }
     return randomString;
 }
+
+function updateOnlineStatus(){
+    const status = navigator.onLine ? 'online' : 'offline';
+    document.querySelector('body').className = status
+    document.querySelector('#online-status span').textContent = status.split('').join(' ')
+}
+
+window.addEventListener('online', updateOnlineStatus)
+window.addEventListener('offline', updateOnlineStatus)
+
+updateOnlineStatus()
