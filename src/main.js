@@ -1,7 +1,6 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 
-const {cpu, mem, netstat} = require('node-os-utils');
-const {processes} = require('systeminformation');
+const {cpu, mem, osCmd, drive} = require('node-os-utils');
 const toMB = (value) => value / 1024 / 1000;
 const toGB = (value) => value / 1024 / 1000 / 1000;
 
@@ -12,6 +11,7 @@ const toGB = (value) => value / 1024 / 1000 / 1000;
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
+      // devTools: false
     }
   })
 
@@ -19,17 +19,31 @@ const toGB = (value) => value / 1024 / 1000 / 1000;
 
   const contents = win.webContents;
 
-  contents.on('did-finish-load', () => {
-    setInterval(async () => {
-      const cpu_usage = await cpu.usage();
-      contents.send('cpu', parseInt(cpu_usage));
+  contents.on('did-finish-load', async () => {
+    
+    const user = await osCmd.whoami()
 
+    contents.send('user_info', {
+      user,
+      drive: await drive.info()
+    })
+    
+    await getSystemInfos();
+
+    async function getSystemInfos() {
+      const cpu_usage = await cpu.usage();
       const {freeMemPercentage:  mem_free_percentage} = await mem.info();
-      contents.send('memory', parseInt(100 - mem_free_percentage) );
-      }, 1000);
+      const memory_usage = 100 - mem_free_percentage;
+
+      contents.send('system_info', {
+        cpu: parseInt(cpu_usage),
+        memory: parseInt(memory_usage),
+      });
+    
+      setTimeout(() => getSystemInfos(), 5000)
+    }
   });
 }
-
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
     // No macOS é comum para aplicativos e sua barra de menu 
@@ -48,3 +62,22 @@ app.on('activate', () => {
 })
   
 app.whenReady().then(createWindow).then()
+
+
+// opening urls
+
+  // const urls = [
+  // ]
+  // win.loadURL(urls[0]);
+    // // win.loadURL(url.format({
+    // //     pathname: path.join(__dirname,"index.html"),
+    // //     protocol: 'file',
+    // //     slashes: true
+    // // }));
+  // win.once('ready-to-show',()=>{
+  //     win.show()
+  // });
+
+  // win.on('closed',()=>{
+  //     win = null;
+  // });

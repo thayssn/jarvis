@@ -2,28 +2,41 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Hello World!</title>
+    <title>J.A.R.V.I.S - 1.0.0.0</title>
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+
     <link rel="stylesheet" href="style.css">
   </head>
   <body>
-    <h1>JARVIS</h1>
+    <h1 id="user">WELCOME,<span class="name"></span> </h1>
 
     <div class="block__wrapper">
         <div class="block cpu">
-            <canvas id="cpuCanvas"></canvas>
             <div class="block_title">CPU USAGE</div>
             <div class="block_value" id="cpu">00.00</div>
         </div>
         <div class="block memory">
-            <canvas id="memoryCanvas"></canvas>
             <div class="block_title">MEMORY USAGE</div>
             <div class="block_value" id="memory">00.00</div>
         </div>
+        <div class="block drive">
+            <div class="block_title">DRIVE USAGE</div>
+            <div class="bar">
+              <div class="used">
+                <span class="value"></span>
+                <span class="tooltip"></span>
+              </div>
+              <div class="free">
+                <span class="value"></span>
+                <span class="tooltip"></span>
+              </div> 
+            </div>
+        </div>
     </div>
 
-    <script src="utils.js"></script>
-    <script src="canvas.js"></script>
     <script src="index.js"></script>
+    <footer>
+      The background image was taken from <a href="https://www.artstation.com/artwork/GXwZgz" target="_blank">https://www.artstation.com/artwork/GXwZgz</a>. All credits to the artist.
+    </footer>
   </body>
 </html>
