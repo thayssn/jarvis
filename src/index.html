@@ -17,8 +17,20 @@
         </div>
       </div> 
     </header>   
+    
     <h1 id="user">WELCOME,<span class="name"></span> </h1>
-    <div id="os"></div>
+    
+    <div id="os">
+      <div class="os_info"></div>
+      <div class="uptime"></div>
+    </div>
+    
+    <div class="block network">
+      <div class="block_title">NETWORK</div>
+      <div id="latency"></div> 
+      <div class="" id="connections"></div>
+    </div>
+  
     <div class="block__wrapper">
         <div id="online-status"> you are [ <span> O F F L I N E </span> ]</div>
         <div class="block cpu">
@@ -32,25 +44,26 @@
             <div class="block_subtitle" id="memory_total"></div>
         </div>
         
-        <div class="block netstats">
-            <div class="block_title">NETSTATS</div>
-            <div class="class" id="netstats"></div>
-        </div>
-        
         <div class="block drive">
-            <div class="block_title">DRIVE USAGE</div>
-            <div class="bar">
-              <div class="used">
-                <span class="value"></span>
-                <span class="tooltip"></span>
-              </div>
-              <div class="free">
-                <span class="value"></span>
-                <span class="tooltip"></span>
-              </div> 
+          <div class="block_title">DRIVE USAGE</div>
+          <div class="bar">
+            <div class="used">
+              <span class="value"></span>
+              <span class="tooltip"></span>
             </div>
-        </div>
+            <div class="free">
+              <span class="value"></span>
+              <span class="tooltip"></span>
+            </div> 
+          </div>
+      </div>
     </div>
+    
+    <footer>
+      Background Image: <a href="https://www.artstation.com/artwork/GXwZgz" target="_blank">https://www.artstation.com/artwork/GXwZgz</a>.
+      Background Music: <a href="https://www.FesliyanStudios.com" target="_blank">https://www.FesliyanStudios.com</a>.
+      All credits to the artists.
+    </footer>
 
     <audio loop autoplay>
       <source src="2019-06-07_-_Chill_Gaming_-_David_Fesliyan.mp3" type="audio/mp3">
@@ -66,10 +79,5 @@
     </script>
     <script src="windowHandler.js"></script>
     <script src="index.js"></script>
-    <footer>
-      Background Image: <a href="https://www.artstation.com/artwork/GXwZgz" target="_blank">https://www.artstation.com/artwork/GXwZgz</a>.
-      Background Music: <a href="https://www.FesliyanStudios.com" target="_blank">https://www.FesliyanStudios.com</a>.
-      All credits to the artists.
-    </footer>
   </body>
 </html>

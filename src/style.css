@@ -88,25 +88,51 @@ h1{
     color: #e3ff44;
 }
 
-.netstats{
-    width: 100%;
+.network{
+    position: absolute;
+    width: calc(100% - 40px);
+    left: 40px;
+    bottom: 16px;
     color: white;
+    display: flex;
+    align-items: flex-end;
 }
 
-.netstats .block_title{
+.network:hover{
+    z-index: 1;
+}
+
+.network .block_title{
     color: #00aeff;
 }
 
-.netstats span:nth-of-type(2n){
+.network span:nth-of-type(2n){
     color: #afd8ff;
 }
 
-.netstats span:after{
+.network span:after{
     content: ' / ';
 }
 
-.netstats span:last-child:after{
+.network span:last-child:after{
     content: '';
+}
+
+#connections{
+    opacity: 0.3;
+}
+
+.network:hover #connections{
+    opacity: 1;
+    background-color: rgba(0,0,0,.85)
+}
+
+#latency{
+    position: absolute;
+    left: 84px;
+    bottom: 62px;
+    transform: rotate(-90deg);
+    transform-origin: left bottom;
 }
 
 .drive{
@@ -267,6 +293,10 @@ footer a:hover{
     color: rgb(241, 252, 255);
 }
 
+#os .uptime{
+
+}
+
 #player{
     position: relative;
     display: inline-block;
@@ -280,6 +310,7 @@ footer a:hover{
     top: 42px;
     right: 14px;
     user-select: none;
+    cursor: pointer;
 }
 
 #player .volume_fill{
@@ -290,4 +321,16 @@ footer a:hover{
     width: 100%;
     background-color: #fc034e;
     transform-origin: center left;
+}
+
+#player::before{
+    content: "volume";
+    font-size: 9px;
+    font-weight: bold;
+    position: absolute;
+    left: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+    z-index: 2;
 }

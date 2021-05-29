@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 
 const {cpu, mem, osCmd, drive, netstat, os} = require('node-os-utils');
+const { networkConnections, inetLatency } = require("systeminformation");
 
 
 const toMB = (value) => value / 1024 / 1000;
@@ -33,7 +34,6 @@ function createWindow () {
     const osInfo = {
       oos: await os.oos(),
       platform: await os.platform(),
-      uptime: `${(await os.uptime() / 60).toFixed(2) } minutes`,
       ip: await os.ip(),
       hostname: await os.hostname()
     }
@@ -47,12 +47,14 @@ function createWindow () {
     await getSystemInfos();
 
     async function getSystemInfos() {
-      const { stats } = await netstat
-      const interfaces = await stats()
       const cpu_usage = await cpu.usage()
       const cpu_model = await cpu.model()
       const {totalMemMb: mem_total ,usedMemMb: mem_total_used, freeMemPercentage:  mem_free_percentage} = await mem.info()
-      const memory_usage = 100 - mem_free_percentage
+      const memory_usage = 100 - mem_free_percentage;
+
+      const ping = await inetLatency();
+      const connections = await networkConnections();
+
       contents.send('system_info', {
         cpu: {
           usage: parseInt(cpu_usage),
@@ -63,7 +65,11 @@ function createWindow () {
           total: mem_total,
           used: mem_total_used,
         },
-        netstats: interfaces
+        network: {
+          ping,
+          connections
+        },
+        uptime: `working for ${(await os.uptime() / 60).toFixed(1) }min`,
       })
     
       setTimeout(async () => await getSystemInfos(), 5000)
