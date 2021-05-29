@@ -1,3 +1,6 @@
+const { networkConnections } = require("systeminformation");
+networkConnections().then(res => console.log(res))
+
 ipcRenderer.on('system_info', (event, {cpu, memory, netstats}) => {
     document.querySelector('#memory').textContent = memory.usage;
     document.querySelector('#memory_total').textContent = `${memory.used}MB of ${memory.total}MB `;
@@ -6,7 +9,6 @@ ipcRenderer.on('system_info', (event, {cpu, memory, netstats}) => {
     document.querySelector('#netstats').innerHTML = `
         ${netstats.map(net => `<span>${net.interface} : ${net.inputBytes} ${net.outputBytes}</span>`).join(' ')}
     `
-
 })
 
 ipcRenderer.on('user_info', (event, {user, drive, os}) => {
@@ -59,3 +61,38 @@ window.addEventListener('online', updateOnlineStatus)
 window.addEventListener('offline', updateOnlineStatus)
 
 updateOnlineStatus()
+
+// document.querySelector('#player .volume').onchange = (e) => {
+//     console.log(e.target.value);
+//     const audio = document.querySelector('audio');
+//     audio.volume = e.target.value / 100
+// }
+
+let clicked = false;
+const player = document.querySelector('#player');
+const fill = player.querySelector('.volume_fill');
+const audioMedia = document.querySelector('audio');
+function changeVolume(e){
+    const rect = e.currentTarget.getClientRects()[0];
+    const posX = e.pageX - rect.x;
+    const percentage = Math.ceil(posX / rect.width * 100) / 100;
+
+    fill.style.transform = `scaleX(${percentage})`;
+
+    audioMedia.volume = percentage
+}
+
+player.addEventListener('mousedown', (e) => {
+    clicked = true;
+    changeVolume(e);
+});
+
+player.addEventListener('mousemove', (e) => {
+    if(clicked){
+        changeVolume(e);
+    }
+});
+
+window.addEventListener('mouseup', () => {
+    clicked = false;
+});
