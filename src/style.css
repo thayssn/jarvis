@@ -288,13 +288,9 @@ footer a:hover{
     word-break: break-all;
 }
 
-#os span{
+#os span em{
     font-weight: bold;
     color: rgb(241, 252, 255);
-}
-
-#os .uptime{
-
 }
 
 #player{

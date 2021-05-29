@@ -1,5 +1,5 @@
 
-ipcRenderer.on('system_info', (event, { cpu, memory, network, uptime }) => {
+ipcRenderer.on('system_info', (event, { cpu, memory, network, os }) => {
     document.querySelector('#memory').textContent = memory.usage;
     document.querySelector('#memory_total').textContent = `${memory.used}MB of ${memory.total}MB `;
     document.querySelector('#cpu').textContent = cpu.usage;
@@ -9,7 +9,8 @@ ipcRenderer.on('system_info', (event, { cpu, memory, network, uptime }) => {
     `
     document.querySelector('#latency').textContent = network.ping.toFixed(2) + 'ms';
 
-    document.querySelector('#os .uptime').textContent = uptime
+    document.querySelector('#os .processes').innerHTML = `<em>processes</em> ${os.processes} `
+    document.querySelector('#os .uptime').innerHTML = `<em>uptime </em>${os.uptime}`
 })
 
 ipcRenderer.on('user_info', (event, { user, drive, os }) => {
@@ -24,7 +25,7 @@ ipcRenderer.on('user_info', (event, { user, drive, os }) => {
     driveBar.querySelector('.free .value').textContent = `${drive.freePercentage}%`;
     driveBar.querySelector('.free .tooltip').textContent = `${drive.freeGb}GB of ${drive.totalGb}GB`;
 
-    document.querySelector('#os .os_info').innerHTML = `${Object.keys(os).map(value => `<span>${value}</span> ${os[value]} `).join(' ')}`
+    document.querySelector('#os .os_info').innerHTML = `${Object.keys(os).map(value => `<em>${value}</em> ${os[value]} `).join(' ')}`
 
 })
 

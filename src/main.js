@@ -1,6 +1,6 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 
-const {cpu, mem, osCmd, drive, netstat, os} = require('node-os-utils');
+const {cpu, mem, osCmd, drive, proc, os} = require('node-os-utils');
 const { networkConnections, inetLatency } = require("systeminformation");
 
 
@@ -69,7 +69,10 @@ function createWindow () {
           ping,
           connections
         },
-        uptime: `working for ${(await os.uptime() / 60).toFixed(1) }min`,
+        os: {
+          processes: await proc.totalProcesses(),
+          uptime: `${Math.floor(await os.uptime() / 60) }min`,
+        }
       })
     
       setTimeout(async () => await getSystemInfos(), 5000)
