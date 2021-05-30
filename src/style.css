@@ -301,11 +301,22 @@ footer a:hover{
     background-color: rgba(0,0,0,.75);
 }
 
+#os em{
+    font-weight: bold;
+    color: #eef5dc;
+}
+
+
 #os .wifi span:nth-of-type(even){
     color: #ff7a9b;
 }
 
-#os .bluetooth span.disconnected{
+#os .battery .charging em,
+#os .battery .charging{
+    color: #abff7a;
+}
+
+#os .bluetooth disconnected{
     color: #aaa;
 }
 
@@ -313,12 +324,6 @@ footer a:hover{
     color: #abff7a;
 }
 
-
-
-#os em{
-    font-weight: bold;
-    color: #eef5dc;
-}
 
 #player{
     position: relative;
