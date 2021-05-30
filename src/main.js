@@ -81,7 +81,7 @@ function createWindow () {
         }
       })
     
-      setTimeout(async () => await getSystemInfos(), 5000)
+      setTimeout(() => getSystemInfos(), 5000)
     }
   })
 
