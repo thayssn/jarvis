@@ -1,5 +1,24 @@
-jarvis
+<pre>j.a.r.v.i.s 1.0.0
 
 <img src="https://raw.githubusercontent.com/thayssn/jarvis/master/src/screenshot.gif" width="240"/>
 
-jarvis is a simple tool to monitor your system.
+a simple tool to monitor your system's health and information.
+
+you can monitor:
+cpu and memory usage
+drive usage
+network connections and latency
+general os information
+online / offline status
+processes running
+battery
+bluetooth devices
+wifi
+
+
+how to run:
+npm i
+npm start
+
+
+</pre>
