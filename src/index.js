@@ -1,5 +1,5 @@
 
-ipcRenderer.on('system_info', (event, { cpu, memory, network, os }) => {
+ipcRenderer.on('system_info', (event, { cpu, memory, network, os, wifi, battery, bluetooth }) => {
     document.querySelector('#memory').textContent = memory.usage;
     document.querySelector('#memory_total').textContent = `${memory.used}MB of ${memory.total}MB `;
     document.querySelector('#cpu').textContent = cpu.usage;
@@ -7,10 +7,17 @@ ipcRenderer.on('system_info', (event, { cpu, memory, network, os }) => {
     document.querySelector('#connections').innerHTML = `
         ${network.connections.map(connection=> `<span> ${connection.process} : ${connection.localAddress} ${connection.localPort} ${connection.protocol}</span>`).join(' ')}
     `
-    document.querySelector('#latency').textContent = network.ping.toFixed(2) + 'ms';
+    document.querySelector('#latency').textContent = network.ping ? network.ping.toFixed(2) + 'ms': '∞';
 
     document.querySelector('#os .processes').innerHTML = `<em>processes</em> ${os.processes} `
-    document.querySelector('#os .uptime').innerHTML = `<em>uptime </em>${os.uptime}`
+    document.querySelector('#os .uptime').innerHTML = `<em>uptime </em>${os.uptime} min`
+    
+    document.querySelector('#os .wifi').innerHTML =`<em>wifi</em> ${wifi.length <= 0 ? 'offline' : wifi.map(device => `<span>${device.ssid} :: ${device.bssid} :: ${device.signalLevel}`).join(' ') }</span>`
+
+    document.querySelector('#os .bluetooth').innerHTML = `<em>bluetoth</em> ${bluetooth.map(device => `<span class="${device.connected ? 'connected' : 'disconnected'}">${device.name} :: ${device.macHost}</span>`).join(' ') }`
+
+    document.querySelector('#os .battery').innerHTML = `<em>battery</em> ${battery.percent}% - ${battery.timeRemaining} min`
+
 })
 
 ipcRenderer.on('user_info', (event, { user, drive, os }) => {

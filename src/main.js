@@ -1,11 +1,10 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 
-const {cpu, mem, osCmd, drive, proc, os} = require('node-os-utils');
-const { networkConnections, inetLatency } = require("systeminformation");
+const {mem, cpu, osCmd, drive, proc, os} = require('node-os-utils');
+const {networkConnections, inetLatency, wifiConnections, battery, bluetoothDevices } = require("systeminformation");
 
-
-const toMB = (value) => value / 1024 / 1000;
-const toGB = (value) => value / 1024 / 1000 / 1000;
+const toMB = (value) => (value / 1024 / 1000).toFixed(2);
+const toGB = (value) => (value / 1024 / 1000 / 1000).toFixed(2);
 
 function createWindow () {
   let win = new BrowserWindow({
@@ -48,12 +47,16 @@ function createWindow () {
 
     async function getSystemInfos() {
       const cpu_usage = await cpu.usage()
-      const cpu_model = await cpu.model()
-      const {totalMemMb: mem_total ,usedMemMb: mem_total_used, freeMemPercentage:  mem_free_percentage} = await mem.info()
-      const memory_usage = 100 - mem_free_percentage;
-
+      const cpu_model = await cpu.model();
+      const {usedMemPercentage, usedMemMb, totalMemMb } = await mem.info();
       const ping = await inetLatency();
       const connections = await networkConnections();
+
+      const bluetooth = await bluetoothDevices()
+      const batteryStatus = await battery();
+  
+      const wifi = await wifiConnections()
+  
 
       contents.send('system_info', {
         cpu: {
@@ -61,17 +64,20 @@ function createWindow () {
           model: cpu_model
         },
         memory: {
-          usage: parseInt(memory_usage),
-          total: mem_total,
-          used: mem_total_used,
+          usage: usedMemPercentage,
+          total: totalMemMb,
+          used: usedMemMb,
         },
         network: {
           ping,
           connections
         },
+        battery: batteryStatus,
+        wifi,
+        bluetooth,
         os: {
           processes: await proc.totalProcesses(),
-          uptime: `${Math.floor(await os.uptime() / 60) }min`,
+          uptime: Math.floor(await os.uptime() / 60),
         }
       })
     
@@ -84,9 +90,7 @@ function createWindow () {
       win.minimize()
     },
     close(){
-      if (process.platform !== 'darwin') {
-        app.quit()
-      }
+      app.quit()
     }
   }
 
@@ -99,11 +103,7 @@ function createWindow () {
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
-    // No macOS é comum para aplicativos e sua barra de menu 
-    // permaneçam ativo até que o usuário explicitamente encerre com Cmd + Q
-    if (process.platform !== 'darwin') {
         app.quit()
-    }
 })
 
 app.on('activate', () => {

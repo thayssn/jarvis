@@ -52,6 +52,8 @@ h1{
 .block__wrapper{
     position: absolute;
     right: 0;
+    top: 0;
+    margin-top: 96px;
     width: 65%;
     height: 80%;
     background-color: rgba(0,0,0,0.8);
@@ -81,11 +83,11 @@ h1{
 }
 
 .cpu .block_title{
-    color: #f693ff;
+    color: #9899ff;
 }
 
 .memory .block_title{
-    color: #e3ff44;
+    color: #9899ff;
 }
 
 .network{
@@ -96,6 +98,8 @@ h1{
     color: white;
     display: flex;
     align-items: flex-end;
+    max-height: 446px;
+    overflow: hidden;
 }
 
 .network:hover{
@@ -135,12 +139,16 @@ h1{
     transform-origin: left bottom;
 }
 
+#connection{
+}
+
 .drive{
     width: 100%;
 }
 
 .drive .block_title{
-    background-color: #fc034e;
+    background-color: #42c8da;
+    color: black;
 }
 
 .drive .bar{
@@ -179,8 +187,8 @@ h1{
 }
 
 .drive .bar .used{
-    color: white;
-    background-color: #fc034e;
+    color: black;
+    background-color: #42c8da;
 }
 
 .drive .bar .free{
@@ -282,31 +290,51 @@ footer a:hover{
 
 #os{
     max-width: 255px;
-    color: white;
+    color: #ff4473;
     word-wrap: break-word;
     white-space:break;
     word-break: break-all;
+
 }
 
-#os span em{
+#os:hover{
+    background-color: rgba(0,0,0,.75);
+}
+
+#os .wifi span:nth-of-type(even){
+    color: #ff7a9b;
+}
+
+#os .bluetooth span.disconnected{
+    color: #aaa;
+}
+
+#os .bluetooth span.connected{
+    color: #abff7a;
+}
+
+
+
+#os em{
     font-weight: bold;
-    color: rgb(241, 252, 255);
+    color: #eef5dc;
 }
 
 #player{
     position: relative;
     display: inline-block;
-    width: 144px;
-    height: 17px;
+    width: 94px;
+    height: 15px;
     border-left: 1px solid #fc034e;
     border-bottom: 1px solid #fc034e;
     border-top: 1px solid #FFF;
     border-right: 1px solid #FFF;
     position: absolute;
-    top: 42px;
-    right: 14px;
+    top: 5px;
+    right: 60px;
     user-select: none;
     cursor: pointer;
+    -webkit-app-region: no-drag;
 }
 
 #player .volume_fill{
@@ -320,7 +348,7 @@ footer a:hover{
 }
 
 #player::before{
-    content: "volume";
+    content: "VOLUME";
     font-size: 9px;
     font-weight: bold;
     position: absolute;
