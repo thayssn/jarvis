@@ -2,7 +2,7 @@
 
 <img src="https://raw.githubusercontent.com/thayssn/jarvis/master/src/screenshot.gif" width="240"/>
 
-a simple tool to monitor your system's health and information.
+a simple tool to monitor your system's health and information made with Electron
 
 you can monitor:
 cpu and memory usage
