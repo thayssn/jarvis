@@ -51,13 +51,15 @@ function createWindow () {
       const {usedMemPercentage, usedMemMb, totalMemMb } = await mem.info();
       const ping = await inetLatency();
       const connections = await networkConnections();
+      let bluetooth = []
 
-      const bluetooth = await bluetoothDevices()
+      if(process.platform === 'darwin')
+         bluetooth = await bluetoothDevices()
+
       const batteryStatus = await battery();
   
       const wifi = await wifiConnections()
-  
-
+      
       contents.send('system_info', {
         cpu: {
           usage: parseInt(cpu_usage),
