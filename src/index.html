@@ -28,7 +28,9 @@
       <div class="wifi"></div>
       <div class="bluetooth"></div>
     </div>
-    
+   
+    <div id="log"></div>
+
     <div class="block network">
       <div class="block_title">NETWORK</div>
       <div id="latency"></div> 
@@ -69,8 +71,12 @@
       All credits to the artists.
     </footer>
 
-    <audio loop autoplay>
+    <audio loop autoplay id="music">
       <source src="2019-06-07_-_Chill_Gaming_-_David_Fesliyan.mp3" type="audio/mp3">
+    </audio>
+
+    <audio autoplay id="gideon">
+      <source src="">
     </audio>
 
     <div id="player">
@@ -82,6 +88,7 @@
       const { ipcRenderer } = require('electron');
     </script>
     <script src="windowHandler.js"></script>
+    <script src="gideon.js"></script>
     <script src="index.js"></script>
   </body>
 </html>

@@ -363,3 +363,9 @@ footer a:hover{
     color: white;
     z-index: 2;
 }
+
+#log {
+    margin-top: 14px;
+    max-width: 340px;
+    color: rgba(255, 255, 255, 0.4);
+}

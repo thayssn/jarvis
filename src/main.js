@@ -37,10 +37,13 @@ function createWindow () {
       hostname: await os.hostname()
     }
 
+    let batteryStatus = await battery();
+
     contents.send('user_info', {
       user,
       drive: driveInfo,
-      os: osInfo
+      os: osInfo,
+      battery: batteryStatus,
     })
     
     await getSystemInfos();

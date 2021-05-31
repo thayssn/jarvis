@@ -1,5 +1,11 @@
+function getRandomSentence(){
+    const sentences = ['Welcome back', 'How are you, captain?', 'Welcome aboard, captain!', `I thought you'd never come back`];
+    const random = Math.floor(Math.random() * sentences.length);
 
-ipcRenderer.on('system_info', (event, { cpu, memory, network, os, wifi, battery, bluetooth }) => {
+    return sentences[random]
+}
+
+ipcRenderer.on('system_info', async (event, { cpu, memory, network, os, wifi, battery, bluetooth }) => {
     document.querySelector('#memory').textContent = memory.usage;
     document.querySelector('#memory_total').textContent = `${memory.used}MB of ${memory.total}MB `;
     document.querySelector('#cpu').textContent = cpu.usage;
@@ -13,17 +19,15 @@ ipcRenderer.on('system_info', (event, { cpu, memory, network, os, wifi, battery,
     document.querySelector('#os .uptime').innerHTML = `<em>uptime </em>${os.uptime} min`
     
     document.querySelector('#os .wifi').innerHTML =`<em>wifi</em> ${wifi.length <= 0 ? 'offline' : wifi.map(device => `<span>${device.ssid} :: ${device.bssid} :: ${device.signalLevel}`).join(' ') }</span>`
-
     document.querySelector('#os .bluetooth').innerHTML = `<em>bluetoth</em> ${bluetooth.map(device => `<span class="${device.connected ? 'connected' : 'disconnected'}">${device.name} :: ${device.macHost}</span>`).join(' ') }`
-
     document.querySelector('#os .battery').innerHTML = `<em>battery</em> ${battery.percent}% ${battery.timeRemaining ? ` - ${ battery.timeRemaining }min left` : ''}<span class="${battery.isCharging ? 'charging' : ''}">${battery.isCharging ? 'charging' : ''}</span>`
-
 })
 
-ipcRenderer.on('user_info', (event, { user, drive, os }) => {
+
+ipcRenderer.on('user_info', async (event, { user, drive, os, battery }) => {
     const nameSpan = document.querySelector('#user .name');
     animateName(nameSpan, user);
-
+     
     const driveBar = document.querySelector('.drive .bar');
     driveBar.querySelector('.used').style.width = `${drive.usedPercentage}%`;
     driveBar.querySelector('.used .value').textContent = `${drive.usedPercentage}%`;
@@ -33,6 +37,12 @@ ipcRenderer.on('user_info', (event, { user, drive, os }) => {
     driveBar.querySelector('.free .tooltip').textContent = `${drive.freeGb}GB of ${drive.totalGb}GB`;
 
     document.querySelector('#os .os_info').innerHTML = `${Object.keys(os).map(value => `<em>${value}</em> ${os[value]} `).join(' ')}`
+
+    await gideon.speak(getRandomSentence())
+    await gideon.speak(`Drive usage: ${drive.usedPercentage}%`)
+    await gideon.speak(`Battery is at ${battery.percent}%`)
+    if(battery.timeRemaining)
+        await gideon.speak(`You have  ${ battery.timeRemaining }minutes left`)
 
 })
 
@@ -78,9 +88,7 @@ updateOnlineStatus()
 let clicked = false;
 const player = document.querySelector('#player');
 const fill = player.querySelector('.volume_fill');
-const audioMedia = document.querySelector('audio');
-
-changeVolume(Number(localStorage.getItem('volume')) || .5);
+const audioMedia = document.querySelector('#music');
 
 function getPercentage(e){
     const rect = e.currentTarget.getClientRects()[0];
@@ -92,6 +100,8 @@ function changeVolume(percentage) {
     fill.style.transform = `scaleX(${percentage})`;
     audioMedia.volume = percentage
 }
+
+changeVolume(Number(localStorage.getItem('volume')) || .2);
 
 player.addEventListener('mousedown', (e) => {
     clicked = true;
@@ -109,3 +119,8 @@ window.addEventListener('mouseup', () => {
 
     localStorage.setItem('volume', audioMedia.volume);
 });
+
+
+window.addEventListener('gideon-log', () => { 
+    document.querySelector('#log').textContent = gideon.log
+})
