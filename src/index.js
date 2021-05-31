@@ -14,7 +14,9 @@ ipcRenderer.on('system_info', (event, { cpu, memory, network, os, wifi, battery,
     
     document.querySelector('#os .wifi').innerHTML =`<em>wifi</em> ${wifi.length <= 0 ? 'offline' : wifi.map(device => `<span>${device.ssid} :: ${device.bssid} :: ${device.signalLevel}`).join(' ') }</span>`
 
-    document.querySelector('#os .bluetooth').innerHTML = `<em>bluetoth</em> ${bluetooth.map(device => `<span class="${device.connected ? 'connected' : 'disconnected'}">${device.name} :: ${device.macHost}</span>`).join(' ') }`
+    if(bluetooth.length){
+        document.querySelector('#os .bluetooth').innerHTML = `<em>bluetoth</em> ${bluetooth.map(device => `<span class="${device.connected ? 'connected' : 'disconnected'}">${device.name} :: ${device.macHost}</span>`).join(' ') }`
+    }
 
     document.querySelector('#os .battery').innerHTML = `<em>battery</em> ${battery.percent}% ${battery.timeRemaining ? ` - ${ battery.timeRemaining }min left` : ''}<span class="${battery.isCharging ? 'charging' : ''}">${battery.isCharging ? 'charging' : ''}</span>`
 
