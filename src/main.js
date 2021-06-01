@@ -37,18 +37,24 @@ function createWindow () {
       hostname: await os.hostname()
     }
 
-    let batteryStatus = await battery();
-
+    const batteryStatus = await battery();
+    const cpu_usage = await cpu.usage()
+    const {usedMemPercentage } = await mem.info();
     contents.send('user_info', {
       user,
       drive: driveInfo,
       os: osInfo,
       battery: batteryStatus,
+      cpu_usage,
+      mem_usage: usedMemPercentage
     })
-    
+
+    let batteryInitialChargingStatus = batteryStatus.isCharging;
+
     await getSystemInfos();
 
-    async function getSystemInfos() {
+
+    async function getSystemInfos(time = 0) {
       const cpu_usage = await cpu.usage()
       const cpu_model = await cpu.model();
       const {usedMemPercentage, usedMemMb, totalMemMb } = await mem.info();
@@ -60,12 +66,20 @@ function createWindow () {
          bluetooth = await bluetoothDevices()
 
       const batteryStatus = await battery();
+
+      if(batteryInitialChargingStatus !== batteryStatus.isCharging) {
+        batteryInitialChargingStatus = batteryStatus.isCharging;
+
+        contents.send('charging', {
+          isCharging: batteryInitialChargingStatus
+        })
+      }
   
       const wifi = await wifiConnections()
       
       contents.send('system_info', {
         cpu: {
-          usage: parseInt(cpu_usage),
+          usage: cpu_usage,
           model: cpu_model
         },
         memory: {
@@ -85,8 +99,8 @@ function createWindow () {
           uptime: Math.floor(await os.uptime() / 60),
         }
       })
-    
-      setTimeout(() => getSystemInfos(), 5000)
+
+      setTimeout(async () => await getSystemInfos(time), 2000)
     }
   })
 

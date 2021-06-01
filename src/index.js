@@ -1,10 +1,5 @@
-function getRandomSentence(){
-    const sentences = ['Welcome back', 'How are you, captain?', 'Welcome aboard, captain!', `I thought you'd never come back`];
-    const random = Math.floor(Math.random() * sentences.length);
 
-    return sentences[random]
-}
-
+const hitCritical = false;
 ipcRenderer.on('system_info', async (event, { cpu, memory, network, os, wifi, battery, bluetooth }) => {
     document.querySelector('#memory').textContent = memory.usage;
     document.querySelector('#memory_total').textContent = `${memory.used}MB of ${memory.total}MB `;
@@ -25,10 +20,18 @@ ipcRenderer.on('system_info', async (event, { cpu, memory, network, os, wifi, ba
     }
 
     document.querySelector('#os .battery').innerHTML = `<em>battery</em> ${battery.percent}% ${battery.timeRemaining ? ` - ${ battery.timeRemaining }min left` : ''}<span class="${battery.isCharging ? 'charging' : ''}">${battery.isCharging ? 'charging' : ''}</span>`
+
+    if(cpu.usage > 50 || memory.usage > 50){
+        if(!hitCritical){
+            await gideon.speak('warning. reached critical system status')
+            hitCritical = true;
+        }
+    }else{
+        hitCritical = false;
+    }
 })
 
-
-ipcRenderer.on('user_info', async (event, { user, drive, os, battery }) => {
+ipcRenderer.on('user_info', async (event, { user, drive, os, battery, cpu_usage, mem_usage }) => {
     const nameSpan = document.querySelector('#user .name');
     animateName(nameSpan, user);
      
@@ -42,16 +45,20 @@ ipcRenderer.on('user_info', async (event, { user, drive, os, battery }) => {
 
     document.querySelector('#os .os_info').innerHTML = `${Object.keys(os).map(value => `<em>${value}</em> ${os[value]} `).join(' ')}`
 
-    await gideon.speak(getRandomSentence())
-    await gideon.speak(`Drive usage: ${drive.usedPercentage}%`)
-    await gideon.speak(`Battery is at ${battery.percent}%`)
+    await gideon.welcome();
+    await gideon.speak(` Central Process Unit at ${Math.round(cpu_usage)}%. Memory at ${Math.round(mem_usage)}%`)
+    await gideon.speak(`Drive usage: ${Math.round(drive.usedPercentage)}%`)
+    await gideon.speak(`Battery is at ${battery.percent}% and ${battery.isCharging ? 'charging' : 'not charging'}`)
     if(battery.timeRemaining)
         await gideon.speak(`You have  ${ battery.timeRemaining }minutes left`)
 
+});
+
+ipcRenderer.on('charging', async (event, {isCharging}) => {
+    await gideon.speak(isCharging ? 'Energy connected. Charging battery' : 'Energy disconnected')
 })
 
 function animateName(element, name) {
-
     const randomNameInterval = setInterval(() => {
         element.textContent = randomString(name.trim())
     }, 100)
@@ -72,16 +79,20 @@ function randomString(string) {
     return randomString;
 }
 
-function updateOnlineStatus() {
+async function updateOnlineStatus({speak = true}) {
     const status = navigator.onLine ? 'online' : 'offline';
     document.querySelector('body').className = status
     document.querySelector('#online-status span').textContent = status.split('').join(' ')
+
+    if(speak){
+        await gideon.speak(`You are ${status}`)
+    }
 }
 
 window.addEventListener('online', updateOnlineStatus)
 window.addEventListener('offline', updateOnlineStatus)
 
-updateOnlineStatus()
+updateOnlineStatus({speak: false})
 
 // document.querySelector('#player .volume').onchange = (e) => {
 //     console.log(e.target.value);

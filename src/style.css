@@ -98,6 +98,7 @@ h1{
     color: white;
     display: flex;
     align-items: flex-end;
+    min-height: 120px;
     max-height: 446px;
     overflow: hidden;
 }
@@ -137,9 +138,6 @@ h1{
     bottom: 62px;
     transform: rotate(-90deg);
     transform-origin: left bottom;
-}
-
-#connection{
 }
 
 .drive{
