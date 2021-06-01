@@ -3,7 +3,10 @@ const googleTTS = require('google-tts-api');
 function Gideon () {
     const voice = document.querySelector('#gideon');
     const logEvent = new Event('gideon-log') 
-
+    const offlineVoice = document.querySelector('#gideon-offline');
+    let resolveFn;
+    this.log = '';
+    
     function getRandomSentence(){
         const sentences = ['Welcome back', 'How are you, captain?', 'Welcome aboard, captain!', `I thought you'd never come back`];
         const random = Math.floor(Math.random() * sentences.length);
@@ -22,9 +25,15 @@ function Gideon () {
         return url;
     }
 
-    let resolveFn;
 
-    this.log = '';
+    if(navigator.onLine){
+        const offlineSentence = getAudioFor('systems offline');
+        offlineVoice.src = offlineSentence;
+        this.offline = () => offlineVoice.play();
+    }else{
+        this.log += `i'm currently out of reach`;
+        window.dispatchEvent(logEvent);
+    }
 
     this.welcome = async () => {
         return await this.speak(getRandomSentence());

@@ -21,7 +21,7 @@ ipcRenderer.on('system_info', async (event, { cpu, memory, network, os, wifi, ba
 
     document.querySelector('#os .battery').innerHTML = `<em>battery</em> ${battery.percent}% ${battery.timeRemaining ? ` - ${ battery.timeRemaining }min left` : ''}<span class="${battery.isCharging ? 'charging' : ''}">${battery.isCharging ? 'charging' : ''}</span>`
 
-    if(cpu.usage > 50 || memory.usage > 50){
+    if(cpu.usage > 50 || memory.usage > 80){
         if(!hitCritical){
             await gideon.speak('warning. reached critical system status')
             hitCritical = true;
@@ -85,7 +85,11 @@ async function updateOnlineStatus({speak = true}) {
     document.querySelector('#online-status span').textContent = status.split('').join(' ')
 
     if(speak){
-        await gideon.speak(`You are ${status}`)
+        if(status === 'offline'){
+            return gideon.offline()
+        }
+        
+        await gideon.speak(`systems back online`)
     }
 }
 
