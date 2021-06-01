@@ -1,5 +1,5 @@
 
-const hitCritical = false;
+let hitCritical = false;
 ipcRenderer.on('system_info', async (event, { cpu, memory, network, os, wifi, battery, bluetooth }) => {
     document.querySelector('#memory').textContent = memory.usage;
     document.querySelector('#memory_total').textContent = `${memory.used}MB of ${memory.total}MB `;
