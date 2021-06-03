@@ -1,7 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 
-const {mem, cpu, osCmd, drive, proc, os} = require('node-os-utils');
-const {networkConnections, inetLatency, wifiConnections, battery, bluetoothDevices } = require("systeminformation");
+const {mem, cpu, osCmd, proc, os} = require('node-os-utils');
+const {diskLayout,fsSize, networkConnections, inetLatency, wifiConnections, battery, bluetoothDevices } = require("systeminformation");
 
 const toMB = (value) => (value / 1024 / 1000).toFixed(2);
 const toGB = (value) => (value / 1024 / 1000 / 1000).toFixed(2);
@@ -29,7 +29,19 @@ function createWindow () {
   contents.on('did-finish-load', async () => {
     
     const user = await osCmd.whoami()
-    const driveInfo = await drive.info()
+    const fsSizeInfo = await fsSize()
+    
+    const drives = fsSizeInfo.map(drive => {
+      return ({
+        mount: drive.mount,
+        usedPercentage: drive.use.toFixed(2),
+        freePercentage: (100 - drive.use).toFixed(2),
+        usedGb: toGB(drive.size - drive.used),
+        freeGb: toGB(drive.available),
+        totalGb: toGB(drive.size),
+      })
+    });
+    
     const osInfo = {
       oos: await os.oos(),
       platform: await os.platform(),
@@ -42,7 +54,7 @@ function createWindow () {
     const {usedMemPercentage } = await mem.info();
     contents.send('user_info', {
       user,
-      drive: driveInfo,
+      drives: drives,
       os: osInfo,
       battery: batteryStatus,
       cpu_usage,

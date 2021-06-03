@@ -140,6 +140,10 @@ h1{
     transform-origin: left bottom;
 }
 
+#drives{
+    width: 100%;
+}
+
 .drive{
     width: 100%;
 }

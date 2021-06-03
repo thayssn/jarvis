@@ -31,18 +31,25 @@ ipcRenderer.on('system_info', async (event, { cpu, memory, network, os, wifi, ba
     }
 })
 
-ipcRenderer.on('user_info', async (event, { user, drive, os, battery, cpu_usage, mem_usage }) => {
+ipcRenderer.on('user_info', async (event, { user, drives, os, battery, cpu_usage, mem_usage }) => {
     const nameSpan = document.querySelector('#user .name');
     animateName(nameSpan, user);
      
-    const driveBar = document.querySelector('.drive .bar');
-    driveBar.querySelector('.used').style.width = `${drive.usedPercentage}%`;
-    driveBar.querySelector('.used .value').textContent = `${drive.usedPercentage}%`;
-    driveBar.querySelector('.used .tooltip').textContent = `${drive.usedGb}GB of ${drive.totalGb}GB`;
-    driveBar.querySelector('.free').style.width = `${drive.freePercentage}%`;
-    driveBar.querySelector('.free .value').textContent = `${drive.freePercentage}%`;
-    driveBar.querySelector('.free .tooltip').textContent = `${drive.freeGb}GB of ${drive.totalGb}GB`;
+    drives.map(drive => {
+        const driveBar = document.querySelector('.drive--template').cloneNode(true);
 
+        console.log(drive)
+
+        driveBar.querySelector('.block_title').textContent = `${drive.mount}`;
+        driveBar.querySelector('.used').style.width = `${drive.usedPercentage}%`;
+        driveBar.querySelector('.used .value').textContent = `${drive.usedPercentage}%`;
+        driveBar.querySelector('.used .tooltip').textContent = `${drive.usedGb}GB of ${drive.totalGb}GB`;
+        driveBar.querySelector('.free').style.width = `${drive.freePercentage}%`;
+        driveBar.querySelector('.free .value').textContent = `${drive.freePercentage}%`;
+        driveBar.querySelector('.free .tooltip').textContent = `${drive.freeGb}GB of ${drive.totalGb}GB`;
+        driveBar.style.display = "block";
+        document.querySelector('#drives').append(driveBar)
+    })
     document.querySelector('#os .os_info').innerHTML = `${Object.keys(os).map(value => `<em>${value}</em> ${os[value]} `).join(' ')}`
 
     await gideon.welcome();
